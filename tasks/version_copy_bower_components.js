@@ -24,12 +24,12 @@ module.exports = function(grunt) {
     var bowerData = grunt.file.readJSON(options.bowerJson);
     var packages = {};
     Object.keys(bowerData['dependencies']).forEach(function(key) {
-        var value = bowerData['dependencies'][key].replace('~', '')
+        var value = bowerData['dependencies'][key].replace('~', '');
         packages[key] = value;
     });
 
     Object.keys(bowerData['resolutions']).forEach(function(key) {
-        var value = bowerData['resolutions'][key].replace('~', '')
+        var value = bowerData['resolutions'][key].replace('~', '');
         packages[key] = value;
     });
 
@@ -57,8 +57,9 @@ module.exports = function(grunt) {
         indexHtml = indexHtml.replace(originalLibPath, newLibPath);
     });
 
-    if(options.jsSetMin)
+    if(options.jsSetMin) {
       indexHtml = indexHtml.replace(/\.js/g, '.min.js');
+    }
 
     grunt.file.write(options.indexHtml, indexHtml);
   });
