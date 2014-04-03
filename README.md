@@ -17,7 +17,7 @@ Once the plugin has been installed, it may be enabled inside your Gruntfile with
 grunt.loadNpmTasks('grunt-version-bower-components');
 ```
 
-## The "version_bower_components" task
+## The "versionCopyBowerComponents" task
 
 ### Overview
 In your project's Gruntfile, add a section named `versionCopyBowerComponents` to the data object passed into `grunt.initConfig()`.
