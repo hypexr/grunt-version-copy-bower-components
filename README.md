@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/hypexr/grunt-version-copy-bower-components?branch=master)](https://travis-ci.org/hypexr/grunt-version-copy-bower-components)
+[![Build Status](https://travis-ci.org/hypexr/grunt-version-copy-bower-components.svg)](https://travis-ci.org/hypexr/grunt-version-copy-bower-components)
 
 # grunt-version-copy-bower-components
 
