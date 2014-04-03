@@ -76,3 +76,7 @@ grunt.initConfig({
 });
 ```
 
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/hypexr/grunt-version-copy-bower-components/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
