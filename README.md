@@ -1,6 +1,6 @@
-# grunt-version-bower-components
+# grunt-version-copy-bower-components
 
-> The best Grunt plugin ever.
+> This plugin copies Bower components into a staging directory with the component's versions appended to the directory name.  It will also fix references to the components in HTML or other specified files.  This aids in creating releases so caching layers will not serve stale libraries when there are updates and so that caches don't need to be updated with every deploy when the library version hasn't changed.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.4`
@@ -20,18 +20,15 @@ grunt.loadNpmTasks('grunt-version-bower-components');
 ## The "version_bower_components" task
 
 ### Overview
-In your project's Gruntfile, add a section named `version_bower_components` to the data object passed into `grunt.initConfig()`.
+In your project's Gruntfile, add a section named `versionCopyBowerComponents` to the data object passed into `grunt.initConfig()`.
 
 ```js
 grunt.initConfig({
-  version_bower_components: {
+  versionCopyBowerComponents: {
     options: {
       // Task-specific options go here.
-    },
-    your_target: {
-      // Target-specific file lists and/or options go here.
-    },
-  },
+    }
+  }
 });
 ```
 
@@ -52,21 +49,18 @@ A string value that is used to do something else with whatever else.
 ### Usage Examples
 
 #### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
+Using the default options the...
 
 ```js
 grunt.initConfig({
-  version_bower_components: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
+  versionCopyBowerComponents: {
+    options: {}
+  }
 });
 ```
 
 #### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
+Custom options...
 
 ```js
 grunt.initConfig({
@@ -82,8 +76,3 @@ grunt.initConfig({
 });
 ```
 
-## Contributing
-In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
-
-## Release History
-_(Nothing yet)_
