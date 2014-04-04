@@ -29,40 +29,13 @@ module.exports = function(grunt) {
     },
 
     // Configuration to be run (and then tested).
-    //banner_property: 'AWESOME',
-    //concat: {
-    //  default_options: {
-    //    files: {
-    //      'tmp/default_options': ['test/fixtures/file1', 'test/fixtures/file2']
-    //    }
-    //  },
-    //  custom_options: {
-    //    options: {
-    //      separator: '\n;\n',
-    //      banner: '/* THIS TEST IS <%= banner_property %> */\n',
-    //      footer: 'dude'
-    //    },
-    //    files: {
-    //      'tmp/custom_options': ['test/fixtures/file1', 'test/fixtures/file2']
-    //    }
-    //  },
-    //  handling_invalid_files: {
-    //    src: ['test/fixtures/file1', 'invalid_file/should_warn/but_not_fail', 'test/fixtures/file2'],
-    //    dest: 'tmp/handling_invalid_files',
-    //    nonull: true,
-    //  },
-    //  process_function: {
-    //    options: {
-    //      process: function(src, filepath) {
-    //        return '// Source: ' + filepath + '\n' +
-    //          src.replace(/file(\d)/, 'f$1');
-    //      }
-    //    },
-    //    files: {
-    //      'tmp/process_function': ['test/fixtures/file1', 'test/fixtures/file2']
-    //    }
-    //  },
-    //},
+    versionCopyBowerComponents: {
+      options: {
+        indexHtml: 'dist/index.html',
+        dest: 'tmp',
+        jsSetMin: true
+      }
+    },
 
     // Unit tests.
     nodeunit: {
@@ -72,15 +45,20 @@ module.exports = function(grunt) {
   });
 
   // Actually load this plugin's task(s).
-  //grunt.loadTasks('tasks');
+  grunt.loadTasks('tasks');
 
   // These plugins provide necessary tasks.
+  grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
   // Whenever the "test" task is run, first clean the "tmp" dir, then run this
   // plugin's task(s), then test the result.
-  grunt.registerTask('test', ['nodeunit']);
+  grunt.registerTask('test', [
+    'clean',
+    'versionCopyBowerComponents',
+    'nodeunit'
+  ]);
 
   // By default, lint and run all tests.
   grunt.registerTask('default', ['jshint', 'test'/*, 'build-contrib'*/]);

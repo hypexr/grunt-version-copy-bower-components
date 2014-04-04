@@ -9,59 +9,77 @@
 'use strict';
 
 module.exports = function(grunt) {
+  var bower = require('bower');
+  var async = require('async');
+  var path = require('path');
 
-  grunt.registerTask('versionCopyBowerComponents', 'Versions bower js libs', function() {
+  // Obtain installed packages and version from bower
+  function processDependencies(dependencies, components) {
+    Object.keys(dependencies).forEach(function(key) {
+        var dependency = dependencies[key];
+        var pkgMeta = dependency.pkgMeta;
+        components[pkgMeta.name] = pkgMeta.version;
+        processDependencies(dependency.dependencies, components);
+    });
+  }
 
+  grunt.registerTask('versionCopyBowerComponents', 'Version and stage Bower components for release.', function() {
     // Set default options
     var options = this.options({
-      bowerJson: 'bower.json',
       indexHtml: 'dist/index.html',
-      dest: 'dist',
+      dest: 'dist/libs',
       jsSetMin: false
     });
 
-    // Read bower.json and create a hash of packages and versions
-    var bowerData = grunt.file.readJSON(options.bowerJson);
-    var packages = {};
-    Object.keys(bowerData['dependencies']).forEach(function(key) {
-        var value = bowerData['dependencies'][key].replace('~', '');
-        packages[key] = value;
-    });
-
-    Object.keys(bowerData['resolutions']).forEach(function(key) {
-        var value = bowerData['resolutions'][key].replace('~', '');
-        packages[key] = value;
-    });
-
-    // Read index html
-    var indexHtml = grunt.file.read(options.indexHtml);
+    var done = this.async();
+    var components = {};
+    bower.commands
+    .list([], {
+      offline: true
+    })
+    .on('end', function (results) {
+      processDependencies(results.dependencies, components);
     
-    // Iterate over each package and move it to dist with a version
-    Object.keys(packages).forEach(function(key) {
-        var srcFiles = 'bower_components/' + key + '/**';
-        var dest = options.dest + '/libs/' + key + '-' + packages[key];
+      grunt.log.ok("Obtained grunt packages and versions");
+      Object.keys(components).forEach(function(key) {
+        grunt.log.writeln('   ' + key + ': ' + components[key]);
+      });
 
-        grunt.log.writeln("Copying: " + srcFiles + ' to: ' + dest);
+      //// Read files that include bower components
+      //var indexHtml = grunt.file.read(options.indexHtml);
+      
+      // Iterate over each package and move it to dist with a version
+      Object.keys(components).forEach(function(key) {
+          var srcFiles = path.join('bower_components', key, '/**');
+          var dest = path.join(options.dest, key + '-' + components[key]);
 
-        grunt.file.expand({ filter: 'isFile'}, srcFiles).forEach(function(file) {
-            var finalDestination = dest + file.replace('bower_components/' + key, '');
-            finalDestination = finalDestination.replace(finalDestination.split('/')[-1], '');
-            grunt.file.copy(file, finalDestination);
-        });
+          grunt.log.writeln("Copying: " + srcFiles + ' to: ' + dest);
 
-        // Find replace on html file with the new path including the version number
-        grunt.log.writeln('Fixing references to bower_components/' + key + ' in ' + options.indexHtml);
+          grunt.file.expand({ filter: 'isFile'}, srcFiles).forEach(function(file) {
+              var finalDestination = dest + file.replace('bower_components/' + key, '');
+              finalDestination = finalDestination.replace(finalDestination.split('/')[-1], '');
+              grunt.file.copy(file, finalDestination);
+          });
 
-        var originalLibPath = new RegExp('bower_components/' + key + '/', 'g');
-        var newLibPath = 'libs/' + key + '-' + packages[key] + '/';
-        indexHtml = indexHtml.replace(originalLibPath, newLibPath);
+          // Find replace on html file with the new path including the version number
+          var originalLibPath = new RegExp('bower_components/' + key + '/', 'g');
+          var newLibPath = 'libs/' + key + '-' + components[key] + '/';
+          //indexHtml = indexHtml.replace(originalLibPath, newLibPath);
+          grunt.log.ok('Fixed references to ' + key + ' to include version ' + components[key] + ' in ..file..');
+
+
+          //if(options.jsSetMin) {
+          //  indexHtml = indexHtml.replace(/\.js/g, '.min.js');
+          //  grunt.log.ok('Modified ..file.. to use minified js libraries');
+          //}
+
+          //grunt.file.write(options.indexHtml, indexHtml);
+      });
+      done();
+    }).on('error', function (error) {
+      grunt.log.error(error);
+      done(false);
     });
-
-    if(options.jsSetMin) {
-      indexHtml = indexHtml.replace(/\.js/g, '.min.js');
-    }
-
-    grunt.file.write(options.indexHtml, indexHtml);
   });
 };
 
