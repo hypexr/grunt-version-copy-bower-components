@@ -36,30 +36,17 @@ grunt.initConfig({
 
 ### Options
 
-#### options.separator
-Type: `String`
-Default value: `',  '`
-
-A string value that is used to do something with whatever.
-
 #### options.punctuation
 Type: `String`
 Default value: `'.'`
 
 A string value that is used to do something else with whatever else.
 
-### Usage Examples
+#### options.jsSetMin
+Type: `Boolean`
+Default value: `false`
 
-#### Default Options
-Using the default options the...
-
-```js
-grunt.initConfig({
-  versionCopyBowerComponents: {
-    options: {}
-  }
-});
-```
+Change references to bower component in files.
 
 #### Custom Options
 Custom options...
@@ -68,13 +55,10 @@ Custom options...
 grunt.initConfig({
   version_bower_components: {
     options: {
-      separator: ': ',
-      punctuation: ' !!!',
-    },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
+      something: '',
+      jsSetMin: true,
+    }
+  }
 });
 ```
 

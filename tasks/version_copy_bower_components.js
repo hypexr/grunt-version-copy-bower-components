@@ -16,7 +16,7 @@ module.exports = function(grunt) {
     var options = this.options({
       bowerJson: 'bower.json',
       indexHtml: 'dist/index.html',
-      dest: null,
+      dest: 'dist',
       jsSetMin: false
     });
 
