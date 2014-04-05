@@ -26,7 +26,7 @@ module.exports = function(grunt) {
         }
 
         var componentData = {};
-        componentData['version'] = pkgMeta.version
+        componentData['version'] = pkgMeta.version;
         componentData['directory'] = dependency.canonicalDir;
         components[pkgMeta.name] = componentData;
         processDependencies(dependency.dependencies, components, exclude);
@@ -46,9 +46,9 @@ module.exports = function(grunt) {
   grunt.registerTask('versionCopyBowerComponents', 'Version and stage Bower components for release.', function() {
     // Set default options
     var options = this.options({
-      indexHtml: 'dist/index.html',
       exclude: [],
       dest: 'dist/libs',
+      filesReferencingComponents: [],
       jsSetMin: false
     });
 

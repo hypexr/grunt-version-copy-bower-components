@@ -28,12 +28,21 @@ module.exports = function(grunt) {
       tests: ['tmp']
     },
 
-    // Configuration to be run (and then tested).
+    copy: {
+      main: {
+        files: [
+          {expand: true, src: ['test/fixtures/index.html'], dest: 'tmp'},
+          {expand: true, src: ['test/fixtures/app.css'], dest: 'tmp'}
+        ]
+      }
+    },
+
+    // Configuration to run (and then test)
     versionCopyBowerComponents: {
       options: {
-        indexHtml: 'dist/index.html',
         exclude: ['underscore'],
-        dest: 'tmp',
+        dest: 'tmp/libs',
+        filesReferencingComponents: ['tmp/index.html', 'tmp/app.css'],
         jsSetMin: true
       }
     },
@@ -52,7 +61,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
-
+  grunt.loadNpmTasks('grunt-contrib-copy');
+  
   // Whenever the "test" task is run, first clean the "tmp" dir, then run this
   // plugin's task(s), then test the result.
   grunt.registerTask('test', [
@@ -62,7 +72,7 @@ module.exports = function(grunt) {
   ]);
 
   // By default, lint and run all tests.
-  grunt.registerTask('default', ['jshint', 'test'/*, 'build-contrib'*/]);
+  grunt.registerTask('default', ['jshint', 'test']);
 
 };
 

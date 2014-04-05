@@ -36,7 +36,7 @@ exports.version_bower_components = {
   },
   verifyExpectedPackages: function(test) {
     ['bootstrap-3.1.1', 'jquery-2.1.0', 'ember-1.5.0', 'handlebars-1.3.0'].forEach(function(component) {
-      test.equal(fs.existsSync(path.join('tmp', component)), true, "Component " + component + " is missing");
+      test.equal(fs.existsSync(path.join('tmp', 'libs', component)), true, "Component " + component + " is missing");
     });
     test.done();
   }
