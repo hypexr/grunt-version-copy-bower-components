@@ -12,6 +12,7 @@ module.exports = function(grunt) {
   var bower = require('bower');
   var async = require('async');
   var path = require('path');
+  var fs = require('fs');
 
   // Obtain installed packages and version from bower
   function processDependencies(dependencies, components) {
@@ -26,10 +27,16 @@ module.exports = function(grunt) {
   grunt.registerTask('versionCopyBowerComponents', 'Version and stage Bower components for release.', function() {
     // Set default options
     var options = this.options({
+      bowerComponentsDirectory: 'bower_components',
       indexHtml: 'dist/index.html',
       dest: 'dist/libs',
       jsSetMin: false
     });
+
+    // Verify that bower's components directory
+    if(! fs.existsSync(options.bowerComponentsDirectory)) {
+      grunt.fatal("The provided bowerComponentsDirectory (" + options.bowerComponentsDirectory + ") doesn't exist");
+    }
 
     var done = this.async();
     var components = {};
@@ -50,7 +57,7 @@ module.exports = function(grunt) {
       
       // Iterate over each package and move it to dist with a version
       Object.keys(components).forEach(function(key) {
-          var srcFiles = path.join('bower_components', key, '/**');
+          var srcFiles = path.join(options.bowerComponentsDirectory, key, '/**');
           var dest = path.join(options.dest, key + '-' + components[key]);
 
           grunt.log.writeln("Copying: " + srcFiles + ' to: ' + dest);
