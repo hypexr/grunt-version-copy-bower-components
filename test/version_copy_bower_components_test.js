@@ -1,6 +1,8 @@
 'use strict';
 
 var grunt = require('grunt');
+var fs = require('fs');
+var path = require('path');
 
 /*
   ======== A Handy Little Nodeunit Reference ========
@@ -27,9 +29,16 @@ exports.version_bower_components = {
     // setup here if necessary
     done();
   },
-  addSomething: function(test) {
-      test.ok(true, 'So true.');
-      test.done();
+  verifyNoExcludedComponents: function(test) {
+    // Verify component present in bower, but listed in exclude is not present
+    test.equal(fs.existsSync(path.join('tmp', 'underscore-1.6.0')), false, "Component listed in exclude shouldn't be present");
+    test.done();
+  },
+  verifyExpectedPackages: function(test) {
+    ['bootstrap-3.1.1', 'jquery-2.1.0', 'ember-1.5.0', 'handlebars-1.3.0'].forEach(function(component) {
+      test.equal(fs.existsSync(path.join('tmp', component)), true, "Component " + component + " is missing");
+    });
+    test.done();
   }
   //default_options: function(test) {
   //  test.expect(1);

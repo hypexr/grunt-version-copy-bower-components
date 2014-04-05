@@ -19,10 +19,12 @@ module.exports = function(grunt) {
     Object.keys(dependencies).forEach(function(key) {
         var dependency = dependencies[key];
         var pkgMeta = dependency.pkgMeta;
+
         if(exclude.indexOf(pkgMeta.name) > -1) {
             grunt.log.ok('Excluding component: ' + pkgMeta.name);
             return;
         }
+
         var componentData = {};
         componentData['version'] = pkgMeta.version
         componentData['directory'] = dependency.canonicalDir;
@@ -34,7 +36,7 @@ module.exports = function(grunt) {
   function copyBowerComponent(srcFiles, dest, componentName) {
     grunt.log.writeln("Copying: " + componentName + ' to: ' + dest);
 
-    grunt.file.expand({ filter: 'isFile'}, srcFiles).forEach(function(file) {
+    grunt.file.expand({filter: 'isFile'}, srcFiles).forEach(function(file) {
         var finalDestination = dest + file.replace('bower_components/' + componentName, '');
         finalDestination = finalDestination.replace(finalDestination.split('/')[-1], '');
         grunt.file.copy(file, finalDestination);
