@@ -32,6 +32,7 @@ module.exports = function(grunt) {
     versionCopyBowerComponents: {
       options: {
         indexHtml: 'dist/index.html',
+        exclude: ['underscore'],
         dest: 'tmp',
         jsSetMin: true
       }
