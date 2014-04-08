@@ -112,7 +112,7 @@ module.exports = function(grunt) {
       options.filesReferencingComponents['files'] = [];
     }
     if(! ('componentsBasePath' in options.filesReferencingComponents)) {
-      options.filesReferencingComponents['componentsBasePath'] = '';
+      options.filesReferencingComponents['componentsBasePath'] = 'bower_components';
     }
     if(! ('useComponentMin' in options.filesReferencingComponents)) {
       options.filesReferencingComponents['useComponentMin'] = false;

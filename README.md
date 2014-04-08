@@ -19,6 +19,8 @@ Once the plugin has been installed, it may be enabled inside your Gruntfile with
 grunt.loadNpmTasks('grunt-version-copy-bower-components');
 ```
 
+This plugin may not work with every bower component. Many of the popular ones are tested, but if the components packaging is not standard there could be problems.
+
 ## The "versionCopyBowerComponents" task
 
 ### Overview
@@ -36,30 +38,76 @@ grunt.initConfig({
 
 ### Options
 
-#### options.punctuation
+#### options.dest
 Type: `String`
-Default value: `'.'`
+Default value: `dist/libs`
 
-A string value that is used to do something else with whatever else.
+The location to place the versioned bower components.
 
-#### options.jsSetMin
+#### options.exclude
+Type: `Array`
+Default value: `[]`
+
+Bower libraries that you don't want versioned and copied to the destination.
+
+#### options.filesReferencingComponents.files
+Type: `Array`
+Default value: `[]`
+
+An array of files that have references to bower components.  For example if you have installed bootstrap with bower and your html file is like:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Test Page</title>
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+  <script src="bower_components/bootstrap/dist/js/bootstrap.js">
+</head>
+<body>
+</body>
+</html>
+```
+
+you would list this file in the files array so that it is updated with the new bootstrap locations post versioning. All files that reference bower components should be listed here.
+
+#### options.filesReferencingComponents.componentsBasePath
+Type: `String`
+Default value: `bower_components`
+
+This is the relative path to the file that is referencing the bower component to the bower component's base directory.
+
+For example:
+
+If your dest is set to: 'dist/mylibs' and you have an index.html file in dist, the files array would include 'dist/index.html' and this would be set to 'mylibs'.
+
+#### options.filesReferencingComponents.useComponentMin
 Type: `Boolean`
 Default value: `false`
 
-Change references to bower component in files.
+Change references to bower component in files to use the .min in the filename if it exists.
 
-#### Custom Options
-Custom options...
+#### Example Options
 
 ```js
 grunt.initConfig({
-  version_bower_components: {
+  versionCopyBowerComponents: {
     options: {
-      something: '',
-      jsSetMin: true,
+      exclude: ['underscore'],
+      dest: 'tmp/libs',
+      filesReferencingComponents: {
+        files: ['tmp/test.html', 'tmp/test.css'],
+        componentsBasePath: 'libs',
+        useComponentMin: true
+      }
     }
   }
 });
 ```
+
+With these options all of the bower components except for underscore will be versioned and copied to 'tmp/libs'.
+
+The files 'tmp/test.html' and 'tmp/test.css' will be modified with the correct paths to the bower components ('lib/component-version') and will use min in the file name if a minified resource exists.
 
 
