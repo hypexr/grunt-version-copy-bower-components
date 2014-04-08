@@ -108,13 +108,13 @@ module.exports = function(grunt) {
     });
 
     // Set default value for filesReferencingComponents
-    if(! 'files' in options.filesReferencingComponents) {
+    if(! ('files' in options.filesReferencingComponents)) {
       options.filesReferencingComponents['files'] = [];
     }
-    if(! 'componentsBasePath' in options.filesReferencingComponents) {
+    if(! ('componentsBasePath' in options.filesReferencingComponents)) {
       options.filesReferencingComponents['componentsBasePath'] = '';
     }
-    if(! 'useComponentMin' in options.filesReferencingComponents) {
+    if(! ('useComponentMin' in options.filesReferencingComponents)) {
       options.filesReferencingComponents['useComponentMin'] = false;
     }
 
