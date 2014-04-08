@@ -17,6 +17,8 @@ module.exports = function(grunt) {
   // Obtain installed packages and version from bower
   function processDependencies(dependencies, components, exclude) {
     Object.keys(dependencies).forEach(function(key) {
+        grunt.log.debug("Obtaining package version for " + key);
+
         var dependency = dependencies[key];
         var pkgMeta = dependency.pkgMeta;
 
@@ -29,17 +31,71 @@ module.exports = function(grunt) {
         componentData['version'] = pkgMeta.version;
         componentData['directory'] = dependency.canonicalDir;
         components[pkgMeta.name] = componentData;
+
+        grunt.log.debug(key + " - version: " + componentData['version'] + " directory: " + componentData['directory']);
+
         processDependencies(dependency.dependencies, components, exclude);
     });
   }
 
   function copyBowerComponent(srcFiles, dest, componentName) {
-    grunt.log.writeln("Copying: " + componentName + ' to: ' + dest);
-
+    grunt.log.debug("Copying: " + componentName + ' to: ' + dest);
     grunt.file.expand({filter: 'isFile'}, srcFiles).forEach(function(file) {
-        var finalDestination = dest + file.replace('bower_components/' + componentName, '');
-        finalDestination = finalDestination.replace(finalDestination.split('/')[-1], '');
-        grunt.file.copy(file, finalDestination);
+      var finalDestination = dest + file.replace(new RegExp('^.*?' + componentName), '');
+      grunt.file.copy(file, finalDestination);
+    });
+    grunt.log.ok("Copied: " + componentName + ' to: ' + dest);
+  }
+
+  function fixReferencingComponents(destBasePath, fileName, components, componentsBasePath, useComponentMin, optionsDest) {
+    grunt.log.debug('File name: ' + fileName);
+
+    // Iterate over each component and fix references to bower components
+    Object.keys(components).forEach(function(componentName) {
+      var file = grunt.file.read(fileName);
+      var newFile = '';
+
+      // Find replace file with the new path including the version number
+      var baseDirParts = components[componentName].directory.split('/');
+      var baseDir = baseDirParts[baseDirParts.length - 2] + '/' + baseDirParts[baseDirParts.length - 1];
+      var originalPathRegex = new RegExp(baseDir + '/', 'g');
+      var newPath = componentsBasePath + '/' + componentName + '-' + components[componentName].version + '/';
+      grunt.log.debug("Replacing " + baseDir + '/ with ' + newPath);
+      file = file.replace(originalPathRegex, newPath);
+      grunt.log.ok(componentName + ' set to include version ' + components[componentName].version + ' in ' + fileName);
+
+      if(useComponentMin) {
+        // Replace component file name with the minified version
+        var escapedNewPath = newPath.replace(/\//g, '\\/');
+        var componentReferenceRegex = new RegExp(escapedNewPath + '(.+)[\'"]');
+
+        // Check each line for component
+        file.split('\n').forEach(function(line) {
+            var matches = line.match(componentReferenceRegex);
+            var match = false;
+            if(matches != null) {
+              // verify that match 1 exists
+              if(matches[1] != null) {
+                var componentFn = matches[1];
+                var componentFnParts = componentFn.split('.');
+                var componentFnMin = componentFn.substr(0, componentFn.lastIndexOf(".")) + ".min" + componentFn.substr(componentFn.lastIndexOf("."), componentFn.length);
+                var newComponentPath = matches[0].replace(matches[1], componentFnMin).replace(/["']/, '');
+                var componentFilePath = path.join(destBasePath.replace(componentsBasePath, ''), newComponentPath);
+
+                // If the minified file exists use it
+                if(fs.existsSync(componentFilePath)) {
+                  newFile += line.replace(componentFn, componentFnMin) + '\n';
+                  grunt.log.ok(componentName + ' set to use minified library: ' + newComponentPath);
+                  match = true;
+                }
+              }
+            }
+            if(! match) {
+              newFile += line + '\n';
+            }
+        });
+      }
+      grunt.file.write(fileName, newFile);
     });
   }
 
@@ -48,9 +104,19 @@ module.exports = function(grunt) {
     var options = this.options({
       exclude: [],
       dest: 'dist/libs',
-      filesReferencingComponents: [],
-      jsSetMin: false
+      filesReferencingComponents: {},
     });
+
+    // Set default value for filesReferencingComponents
+    if(! 'files' in options.filesReferencingComponents) {
+      options.filesReferencingComponents['files'] = [];
+    }
+    if(! 'componentsBasePath' in options.filesReferencingComponents) {
+      options.filesReferencingComponents['componentsBasePath'] = '';
+    }
+    if(! 'useComponentMin' in options.filesReferencingComponents) {
+      options.filesReferencingComponents['useComponentMin'] = false;
+    }
 
     var done = this.async();
     var components = {};
@@ -65,10 +131,7 @@ module.exports = function(grunt) {
       Object.keys(components).forEach(function(componentName) {
         grunt.log.writeln('   ' + componentName + ': ' + components[componentName].version);
       });
-
-      //// Read files that include bower components
-      //var indexHtml = grunt.file.read(options.indexHtml);
-      
+ 
       // Iterate over each package and move it to dist with a version
       Object.keys(components).forEach(function(componentName) {
         // Verify that the component exists on the file system
@@ -80,21 +143,19 @@ module.exports = function(grunt) {
         var dest = path.join(options.dest, componentName + '-' + components[componentName].version);
 
         copyBowerComponent(srcFiles, dest, componentName);
-
-        // Find replace on html file with the new path including the version number
-        var originalLibPath = new RegExp('bower_components/' + componentName + '/', 'g');
-        var newLibPath = 'libs/' + componentName + '-' + components[componentName].version + '/';
-        //indexHtml = indexHtml.replace(originalLibPath, newLibPath);
-        grunt.log.ok('Fixed references to ' + componentName + ' to include version ' + components[componentName].version + ' in ..file..');
-
-
-        //if(options.jsSetMin) {
-        //  indexHtml = indexHtml.replace(/\.js/g, '.min.js');
-        //  grunt.log.ok('Modified ..file.. to use minified js libraries');
-        //}
-
-        //grunt.file.write(options.indexHtml, indexHtml);
       });
+
+      // Iterate over filesReferencingComponents and fix references
+      options.filesReferencingComponents.files.forEach(function(fileName) {
+        fixReferencingComponents(options.dest,
+          fileName,
+          components,
+          options.filesReferencingComponents.componentsBasePath,
+          options.filesReferencingComponents.useComponentMin,
+          options.dest
+        );
+      });
+
       done();
     })
     .on('error', function (error) {

@@ -31,8 +31,7 @@ module.exports = function(grunt) {
     copy: {
       main: {
         files: [
-          {expand: true, src: ['test/fixtures/index.html'], dest: 'tmp'},
-          {expand: true, src: ['test/fixtures/app.css'], dest: 'tmp'}
+          { expand: true, flatten: true, src: ['test/fixtures/test.html', 'test/fixtures/test.css'], dest: 'tmp' },
         ]
       }
     },
@@ -42,8 +41,11 @@ module.exports = function(grunt) {
       options: {
         exclude: ['underscore'],
         dest: 'tmp/libs',
-        filesReferencingComponents: ['tmp/index.html', 'tmp/app.css'],
-        jsSetMin: true
+        filesReferencingComponents: {
+          files: ['tmp/test.html', 'tmp/test.css'],
+          componentsBasePath: 'libs',
+          useComponentMin: true
+        }
       }
     },
 
@@ -67,6 +69,7 @@ module.exports = function(grunt) {
   // plugin's task(s), then test the result.
   grunt.registerTask('test', [
     'clean',
+    'copy',
     'versionCopyBowerComponents',
     'nodeunit'
   ]);
