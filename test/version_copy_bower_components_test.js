@@ -39,23 +39,21 @@ exports.version_bower_components = {
       test.equal(fs.existsSync(path.join('tmp', 'libs', component)), true, "Component " + component + " is missing");
     });
     test.done();
+  },
+  verifyModifiedHtmlFile: function(test) {
+    test.expect(1);
+    var actual = grunt.file.read('tmp/test.html');
+    var expected = grunt.file.read('test/expected/test.html');
+
+    test.equal(actual, expected, 'should be the same');
+    test.done();
+  },
+  verifyModifiedCssFile: function(test) {
+    test.expect(1);
+    var actual = grunt.file.read('tmp/test.css');
+    var expected = grunt.file.read('test/expected/test.css');
+
+    test.equal(actual, expected, 'should be the same');
+    test.done();
   }
-  //default_options: function(test) {
-  //  test.expect(1);
-
-  //  var actual = grunt.file.read('tmp/default_options');
-  //  var expected = grunt.file.read('test/expected/default_options');
-  //  test.equal(actual, expected, 'should describe what the default behavior is.');
-
-  //  test.done();
-  //},
-  //custom_options: function(test) {
-  //  test.expect(1);
-
-  //  var actual = grunt.file.read('tmp/custom_options');
-  //  var expected = grunt.file.read('test/expected/custom_options');
-  //  test.equal(actual, expected, 'should describe what the custom option(s) behavior is.');
-
-  //  test.done();
-  //},
 };

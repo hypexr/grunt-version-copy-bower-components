@@ -62,7 +62,7 @@ module.exports = function(grunt) {
       var newPath = componentsBasePath + '/' + componentName + '-' + components[componentName].version + '/';
       grunt.log.debug("Replacing " + baseDir + '/ with ' + newPath);
       file = file.replace(originalPathRegex, newPath);
-      grunt.log.ok(componentName + ' set to include version ' + components[componentName].version + ' in ' + fileName);
+      grunt.log.ok(componentName + ' modified to reference version ' + components[componentName].version + ' in ' + fileName);
 
       if(useComponentMin) {
         // Replace component file name with the minified version
