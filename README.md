@@ -85,9 +85,9 @@ grunt.initConfig({
   versionCopyBowerComponents: {
     options: {
       exclude: ['underscore'],
-      dest: 'tmp/libs',
+      dest: 'dist/libs',
       filesReferencingComponents: {
-        files: ['tmp/test.html', 'tmp/test.css'],
+        files: ['dist/test.html', 'dist/test.css'],
         useComponentMin: true
       }
     }
@@ -95,8 +95,8 @@ grunt.initConfig({
 });
 ```
 
-With these options all of the bower components except for underscore will be versioned and copied to 'tmp/libs'.
+With these options all of the bower components except for underscore will be versioned and copied to 'dist/libs'.
 
-The files 'tmp/test.html' and 'tmp/test.css' will be modified with the correct paths to the bower components ('lib/component-version') and will use min in the file name if a minified resource exists.
+The files 'dist/test.html' and 'dist/test.css' will be modified with the correct paths to the bower components ('lib/component-version') and will use min in the file name if a minified resource exists.
 
 
