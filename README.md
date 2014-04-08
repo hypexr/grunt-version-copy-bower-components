@@ -88,7 +88,6 @@ grunt.initConfig({
       dest: 'tmp/libs',
       filesReferencingComponents: {
         files: ['tmp/test.html', 'tmp/test.css'],
-        componentsBasePath: 'libs',
         useComponentMin: true
       }
     }
