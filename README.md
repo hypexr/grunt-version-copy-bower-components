@@ -72,16 +72,6 @@ An array of files that have references to bower components.  For example if you 
 
 you would list this file in the files array so that it is updated with the new bootstrap locations post versioning. All files that reference bower components should be listed here.
 
-#### options.filesReferencingComponents.componentsBasePath
-Type: `String`
-Default value: `bower_components`
-
-This is the relative path to the file that is referencing the bower component to the bower component's base directory.
-
-For example:
-
-If your dest is set to: 'dist/mylibs' and you have an index.html file in dist, the files array would include 'dist/index.html' and this would be set to 'mylibs'.
-
 #### options.filesReferencingComponents.useComponentMin
 Type: `Boolean`
 Default value: `false`

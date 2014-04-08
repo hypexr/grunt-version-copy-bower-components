@@ -50,7 +50,7 @@ exports.version_bower_components = {
   },
   verifyModifiedCssFile: function(test) {
     test.expect(1);
-    var actual = grunt.file.read('tmp/test.css');
+    var actual = grunt.file.read('tmp/css/test.css');
     var expected = grunt.file.read('test/expected/test.css');
 
     test.equal(actual, expected, 'should be the same');

@@ -1,7 +1,7 @@
 {
   "name": "grunt-version-copy-bower-components",
   "description": "Version and stage Bower components for release.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "http://app.multisight.com",
   "author": {
     "name": "hypexr",

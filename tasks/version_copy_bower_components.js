@@ -47,7 +47,7 @@ module.exports = function(grunt) {
     grunt.log.ok("Copied: " + componentName + ' to: ' + dest);
   }
 
-  function fixReferencingComponents(destBasePath, fileName, components, componentsBasePath, useComponentMin, optionsDest) {
+  function fixReferencingComponents(destBasePath, fileName, components, useComponentMin, optionsDest) {
     grunt.log.debug('File name: ' + fileName);
 
     // Iterate over each component and fix references to bower components
@@ -57,10 +57,13 @@ module.exports = function(grunt) {
 
       // Find replace file with the new path including the version number
       var baseDirParts = components[componentName].directory.split('/');
-      var baseDir = baseDirParts[baseDirParts.length - 2] + '/' + baseDirParts[baseDirParts.length - 1];
-      var originalPathRegex = new RegExp(baseDir + '/', 'g');
-      var newPath = componentsBasePath + '/' + componentName + '-' + components[componentName].version + '/';
-      grunt.log.debug("Replacing " + baseDir + '/ with ' + newPath);
+      var baseDir = path.join(baseDirParts[baseDirParts.length - 2], baseDirParts[baseDirParts.length - 1]);
+      var originalPathRegex = new RegExp(baseDir, 'g');
+      var newFilePath = path.join(destBasePath, componentName + '-' + components[componentName].version);
+
+      var newPath = path.relative(path.resolve(fileName), path.resolve(newFilePath)).replace(/^..\//, '');
+
+      grunt.log.debug("Replacing " + baseDir + ' with ' + newPath);
       file = file.replace(originalPathRegex, newPath);
       grunt.log.ok(componentName + ' modified to reference version ' + components[componentName].version + ' in ' + fileName);
 
@@ -80,8 +83,10 @@ module.exports = function(grunt) {
                 var componentFnParts = componentFn.split('.');
                 var componentFnMin = componentFn.substr(0, componentFn.lastIndexOf(".")) + ".min" + componentFn.substr(componentFn.lastIndexOf("."), componentFn.length);
                 var newComponentPath = matches[0].replace(matches[1], componentFnMin).replace(/["']/, '');
-                var componentFilePath = path.join(destBasePath.replace(componentsBasePath, ''), newComponentPath);
 
+                var componentFilePath = path.resolve(optionsDest, path.join('../', newComponentPath));
+
+                grunt.log.debug("Checking if minified file exists " + componentFilePath);
                 // If the minified file exists use it
                 if(fs.existsSync(componentFilePath)) {
                   newFile += line.replace(componentFn, componentFnMin) + '\n';
@@ -107,12 +112,17 @@ module.exports = function(grunt) {
       filesReferencingComponents: {},
     });
 
+    // Normalize dest location
+    options.dest = path.normalize(options.dest);
+
     // Set default value for filesReferencingComponents
     if(! ('files' in options.filesReferencingComponents)) {
       options.filesReferencingComponents['files'] = [];
-    }
-    if(! ('componentsBasePath' in options.filesReferencingComponents)) {
-      options.filesReferencingComponents['componentsBasePath'] = 'bower_components';
+    } else {
+      options.filesReferencingComponents.files.map(function(item, idx) {
+          // Save normalized filename
+          options.filesReferencingComponents.files[idx] = path.normalize(item);
+      });
     }
     if(! ('useComponentMin' in options.filesReferencingComponents)) {
       options.filesReferencingComponents['useComponentMin'] = false;
@@ -150,7 +160,6 @@ module.exports = function(grunt) {
         fixReferencingComponents(options.dest,
           fileName,
           components,
-          options.filesReferencingComponents.componentsBasePath,
           options.filesReferencingComponents.useComponentMin,
           options.dest
         );

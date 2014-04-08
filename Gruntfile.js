@@ -31,7 +31,8 @@ module.exports = function(grunt) {
     copy: {
       main: {
         files: [
-          { expand: true, flatten: true, src: ['test/fixtures/test.html', 'test/fixtures/test.css'], dest: 'tmp' },
+          { expand: true, flatten: true, src: ['test/fixtures/test.html'], dest: 'tmp' },
+          { expand: true, flatten: true, src: ['test/fixtures/test.css'], dest: 'tmp/css' }
         ]
       }
     },
@@ -40,10 +41,9 @@ module.exports = function(grunt) {
     versionCopyBowerComponents: {
       options: {
         exclude: ['underscore'],
-        dest: 'tmp/libs',
+        dest: 'tmp//libs/',
         filesReferencingComponents: {
-          files: ['tmp/test.html', 'tmp/test.css'],
-          componentsBasePath: 'libs',
+          files: ['./tmp//test.html', 'tmp/css/test.css'],
           useComponentMin: true
         }
       }
