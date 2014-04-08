@@ -19,7 +19,7 @@ Once the plugin has been installed, it may be enabled inside your Gruntfile with
 grunt.loadNpmTasks('grunt-version-copy-bower-components');
 ```
 
-This plugin may not work with every bower component. Many of the popular ones are tested, but if the components packaging is not standard there could be problems.
+This plugin may not work with every bower component. Many of the popular ones have been tested, but if the components packaging is not standard there could be problems.
 
 ## The "versionCopyBowerComponents" task
 
