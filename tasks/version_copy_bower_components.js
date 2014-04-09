@@ -58,13 +58,12 @@ module.exports = function(grunt) {
       // Find replace file with the new path including the version number
       var baseDirParts = components[componentName].directory.split('/');
       var baseDir = path.join(baseDirParts[baseDirParts.length - 2], baseDirParts[baseDirParts.length - 1]);
-      var originalPathRegex = new RegExp(baseDir, 'g');
+      var originalPathRegex = new RegExp(baseDir + '/', 'g');
       var newFilePath = path.join(destBasePath, componentName + '-' + components[componentName].version);
-
       var newPath = path.relative(path.resolve(fileName), path.resolve(newFilePath)).replace(/^..\//, '');
 
       grunt.log.debug("Replacing " + baseDir + ' with ' + newPath);
-      file = file.replace(originalPathRegex, newPath);
+      file = file.replace(originalPathRegex, newPath + '/');
       grunt.log.ok(componentName + ' modified to reference version ' + components[componentName].version + ' in ' + fileName);
 
       if(useComponentMin) {
