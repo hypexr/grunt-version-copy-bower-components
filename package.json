@@ -1,23 +1,23 @@
 {
   "name": "grunt-version-copy-bower-components",
   "description": "Version and stage Bower components for release.",
-  "version": "0.1.7",
-  "homepage": "http://app.multisight.com",
+  "version": "0.1.8",
+  "homepage": "https://github.com/hypexr/grunt-version-copy-bower-components",
   "author": {
-    "name": "hypexr",
+    "name": "Scott Rippee",
     "email": "scott@hypexr.org"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/MultiSight/webclient.git"
+    "url": "https://github.com/hypexr/grunt-version-copy-bower-components.git"
   },
   "bugs": {
-    "url": "https://github.com/MultiSight/webclient/issues"
+    "url": "https://github.com/hypexr/grunt-version-copy-bower-components/issues"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/MultiSight/webclient/blob/master/LICENSE-MIT"
+      "url": "https://github.com/hypexr/grunt-version-copy-bower-components/blob/master/LICENSE-MIT"
     }
   ],
   "engines": {

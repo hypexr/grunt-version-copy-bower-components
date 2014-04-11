@@ -53,7 +53,6 @@ module.exports = function(grunt) {
     // Iterate over each component and fix references to bower components
     Object.keys(components).forEach(function(componentName) {
       var file = grunt.file.read(fileName);
-      var newFile = '';
 
       // Find replace file with the new path including the version number
       var baseDirParts = components[componentName].directory.split('/');
@@ -66,41 +65,48 @@ module.exports = function(grunt) {
       file = file.replace(originalPathRegex, newPath + '/');
       grunt.log.ok(componentName + ' modified to reference version ' + components[componentName].version + ' in ' + fileName);
 
-      if(useComponentMin) {
+      if(useComponentMin && ! /\.min\./.test(fileName)) {
         // Replace component file name with the minified version
-        var escapedNewPath = newPath.replace(/\//g, '\\/');
-        var componentReferenceRegex = new RegExp(escapedNewPath + '(.+)[\'"]');
-
-        // Check each line for component
-        file.split('\n').forEach(function(line) {
-            var matches = line.match(componentReferenceRegex);
-            var match = false;
-            if(matches != null) {
-              // verify that match 1 exists
-              if(matches[1] != null) {
-                var componentFn = matches[1];
-                var componentFnParts = componentFn.split('.');
-                var componentFnMin = componentFn.substr(0, componentFn.lastIndexOf(".")) + ".min" + componentFn.substr(componentFn.lastIndexOf("."), componentFn.length);
-                var newComponentPath = matches[0].replace(matches[1], componentFnMin).replace(/["']/, '');
-
-                var componentFilePath = path.resolve(optionsDest, path.join('../', newComponentPath));
-
-                grunt.log.debug("Checking if minified file exists " + componentFilePath);
-                // If the minified file exists use it
-                if(fs.existsSync(componentFilePath)) {
-                  newFile += line.replace(componentFn, componentFnMin) + '\n';
-                  grunt.log.ok(componentName + ' set to use minified library: ' + newComponentPath);
-                  match = true;
-                }
-              }
-            }
-            if(! match) {
-              newFile += line + '\n';
-            }
-        });
+        grunt.file.write(fileName, setMin(newPath, componentName, file, optionsDest));
+      } else {
+        grunt.file.write(fileName, file);
       }
-      grunt.file.write(fileName, newFile);
     });
+  }
+
+  function setMin(newPath, componentName, file, optionsDest) {
+    var newFile = '';
+    var escapedNewPath = newPath.replace(/\//g, '\\/');
+    var componentReferenceRegex = new RegExp(escapedNewPath + '(.+)[\'"]');
+
+    // Check each line for component
+    file.split('\n').forEach(function(line) {
+        var matches = line.match(componentReferenceRegex);
+        var match = false;
+        if(matches != null) {
+          // verify that match 1 exists
+          if(matches[1] != null) {
+            var componentFn = matches[1];
+            var componentFnParts = componentFn.split('.');
+            var componentFnMin = componentFn.substr(0, componentFn.lastIndexOf(".")) + ".min" + componentFn.substr(componentFn.lastIndexOf("."), componentFn.length);
+            var newComponentPath = matches[0].replace(matches[1], componentFnMin).replace(/["']/, '');
+
+            var componentFilePath = path.resolve(optionsDest, path.join('../', newComponentPath));
+
+            grunt.log.debug("Checking if minified file exists " + componentFilePath);
+            // If the minified file exists use it
+            if(fs.existsSync(componentFilePath)) {
+              newFile += line.replace(componentFn, componentFnMin) + '\n';
+              grunt.log.ok(componentName + ' set to use minified library: ' + newComponentPath);
+              match = true;
+            }
+          }
+        }
+        if(! match) {
+          newFile += line + '\n';
+        }
+    });
+    return newFile;
   }
 
   grunt.registerTask('versionCopyBowerComponents', 'Version and stage Bower components for release.', function() {
