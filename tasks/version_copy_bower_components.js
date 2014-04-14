@@ -17,24 +17,24 @@ module.exports = function(grunt) {
   // Obtain installed packages and version from bower
   function processDependencies(dependencies, components, exclude) {
     Object.keys(dependencies).forEach(function(key) {
-        grunt.log.debug("Obtaining package version for " + key);
+      grunt.log.debug("Obtaining package version for " + key);
 
-        var dependency = dependencies[key];
-        var pkgMeta = dependency.pkgMeta;
+      var dependency = dependencies[key];
+      var pkgMeta = dependency.pkgMeta;
 
-        if(exclude.indexOf(pkgMeta.name) > -1) {
-            grunt.log.ok('Excluding component: ' + pkgMeta.name);
-            return;
-        }
+      if(exclude.indexOf(pkgMeta.name) > -1) {
+          grunt.log.ok('Excluding component: ' + pkgMeta.name);
+          return;
+      }
 
-        var componentData = {};
-        componentData['version'] = pkgMeta.version;
-        componentData['directory'] = dependency.canonicalDir;
-        components[pkgMeta.name] = componentData;
+      var componentData = {};
+      componentData['version'] = pkgMeta.version;
+      componentData['directory'] = dependency.canonicalDir;
+      components[pkgMeta.name] = componentData;
 
-        grunt.log.debug(key + " - version: " + componentData['version'] + " directory: " + componentData['directory']);
+      grunt.log.debug(key + " - version: " + componentData['version'] + " directory: " + componentData['directory']);
 
-        processDependencies(dependency.dependencies, components, exclude);
+      processDependencies(dependency.dependencies, components, exclude);
     });
   }
 
