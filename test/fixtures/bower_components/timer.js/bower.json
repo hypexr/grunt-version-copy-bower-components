@@ -1,0 +1,21 @@
+{
+  "name": "timer.js",
+  "version": "0.1.1",
+  "homepage": "https://github.com/vitalk/timer.js",
+  "authors": [
+    "Vital Kudzelka"
+  ],
+  "description": "Human-readable interface for `setTimeout`, `clearTimeout` functions",
+  "main": "dist/timer.js",
+  "keywords": [
+    "timer"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

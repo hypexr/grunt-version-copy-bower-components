@@ -1,0 +1,32 @@
+{
+  "name": "timer.js",
+  "version": "0.1.1",
+  "description": "Human-readable interface for `setTimeout`, `clearTimeout` functions",
+  "author": {
+    "name": "Vital Kudzelka",
+    "email": "vital.kudzelka@gmail.com",
+    "url": "https://github.com/vitalk/"
+  },
+  "main": "dist/timer.js",
+  "contibutors": [
+    "Vasili Kauryha (https://github.com/vkovrigo)"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/vitalk/timer.js.git"
+  },
+  "keywords": [
+    "timer"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vitalk/timer.js/issues"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-uglify": "~0.3.1",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-concat": "~0.3.0"
+  }
+}
