@@ -35,9 +35,13 @@ exports.version_bower_components = {
     test.done();
   },
   verifyExpectedPackages: function(test) {
-    ['bootstrap-3.1.1', 'jquery-2.1.0', 'ember-1.5.0', 'handlebars-1.3.0'].forEach(function(component) {
+    ['bootstrap-3.1.1', 'jquery-2.1.0', 'ember-1.5.0', 'handlebars-1.3.0', 'timer.js-0.1.1'].forEach(function(component) {
       test.equal(fs.existsSync(path.join('tmp', 'libs', component)), true, "Component " + component + " is missing");
     });
+    test.done();
+  },
+  verifyTimerJsDist: function(test) {
+    test.equal(fs.existsSync(path.join('tmp', 'libs', 'timer.js-0.1.1', 'dist')), true, "Timer.js dist directory is missing");
     test.done();
   },
   verifyModifiedHtmlFile: function(test) {
