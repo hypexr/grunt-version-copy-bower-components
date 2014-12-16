@@ -44,6 +44,11 @@ exports.version_bower_components = {
     test.equal(fs.existsSync(path.join('tmp', 'libs', 'timer.js-0.1.1', 'dist')), true, "Timer.js dist directory is missing");
     test.done();
   },
+  verifyFlotDist: function(test) {
+    test.equal(fs.existsSync(path.join('tmp', 'libs', 'Flot-0.8.3')), true, "Flot directory directory is missing");
+    test.equal(fs.existsSync(path.join('tmp', 'libs', 'Flot-0.8.3', 'jquery.flot.js')), true, 'jquery.flot.js is missing');
+    test.done();
+  },
   verifyModifiedHtmlFile: function(test) {
     test.expect(1);
     var actual = grunt.file.read('tmp/test.html');

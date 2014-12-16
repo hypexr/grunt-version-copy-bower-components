@@ -38,10 +38,9 @@ module.exports = function(grunt) {
     });
   }
 
-  function copyBowerComponent(srcFiles, dest, componentName) {
-    grunt.log.debug("Copying: " + componentName + ' to: ' + dest);
-    grunt.file.expand({filter: 'isFile'}, srcFiles).forEach(function(file) {
-      var finalDestination = dest + file.replace(new RegExp('^.*?' + componentName), '');
+  function copyBowerComponent(srcDirectory, srcFilesPath, dest, componentName) {
+    grunt.file.expand({filter: 'isFile'}, srcFilesPath).forEach(function(file) {
+      var finalDestination = dest + file.replace(srcDirectory, '');
       grunt.file.copy(file, finalDestination);
     });
     grunt.log.ok("Copied: " + componentName + ' to: ' + dest);
@@ -53,6 +52,7 @@ module.exports = function(grunt) {
     // Iterate over each component and fix references to bower components
     Object.keys(components).forEach(function(componentName) {
       var file = grunt.file.read(fileName);
+      file = file.substring(0, file.length - 1);
 
       // Find replace file with the new path including the version number
       var baseDirParts = components[componentName].directory.split('/');
@@ -154,10 +154,10 @@ module.exports = function(grunt) {
           grunt.fatal("The provided bowerComponentsDirectory (" + components[componentName].directory + ") doesn't exist");
         }
 
-        var srcFiles = path.join(components[componentName].directory, '**');
+        var srcFilesPath = path.join(components[componentName].directory, '**');
         var dest = path.join(options.dest, componentName + '-' + components[componentName].version);
 
-        copyBowerComponent(srcFiles, dest, componentName);
+        copyBowerComponent(components[componentName].directory, srcFilesPath, dest, componentName);
       });
 
       // Iterate over filesReferencingComponents and fix references
