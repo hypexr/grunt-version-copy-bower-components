@@ -52,7 +52,7 @@ module.exports = function(grunt) {
     // Iterate over each component and fix references to bower components
     Object.keys(components).forEach(function(componentName) {
       var file = grunt.file.read(fileName);
-      file = file.substring(0, file.length - 1);
+      file = file.substring(0, file.length);
 
       // Find replace file with the new path including the version number
       var baseDirParts = components[componentName].directory.split('/');
