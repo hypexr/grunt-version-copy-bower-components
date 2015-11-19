@@ -2,6 +2,8 @@
 
 # grunt-version-copy-bower-components
 
+[![Join the chat at https://gitter.im/hypexr/grunt-version-copy-bower-components](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/hypexr/grunt-version-copy-bower-components?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 > This plugin copies Bower components into a staging directory with the component's versions appended to the directory name.  It will also fix references to the components in HTML or other specified files.  This aids in creating releases so caching layers will not serve stale libraries when there are updates and so that caches don't need to be updated with every deploy when the library version hasn't changed.
 
 ## Getting Started
