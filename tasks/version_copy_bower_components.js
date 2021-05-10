@@ -27,9 +27,12 @@ module.exports = function(grunt) {
           return;
       }
 
+      //for windows
+      var canonicaldir = dependency.canonicalDir.split('\\').join('/');
+
       var componentData = {};
       componentData['version'] = pkgMeta.version;
-      componentData['directory'] = dependency.canonicalDir;
+      componentData['directory'] = canonicaldir;
       components[pkgMeta.name] = componentData;
 
       grunt.log.debug(key + " - version: " + componentData['version'] + " directory: " + componentData['directory']);
